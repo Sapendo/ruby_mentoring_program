@@ -3,7 +3,7 @@
 require './validation'
 require './user'
 require './card_checksum'
-require './logger'
+require 'logger'
 
 # The main class which union two separate classes like User and Checksum.
 # As main class it make dicision to create the appropriate class or
@@ -13,6 +13,10 @@ class Dashboard
   NAME_PATTERN = Regexp.new(/[A-Za-z]{3,}/)
   CARD_PATTERN = Regexp.new(/^((\d{4}[ -]){3}|(\d){12})\d{4}$/)
   DIGITAL_PATTERN = Regexp.new(/^[\d -]+$/)
+
+  def initialize
+    @logger = Logger.new('log_file.log')  
+  end
 
   def user_introduction
     puts 'Please introduce yourself'
@@ -40,7 +44,7 @@ class Dashboard
     begin
       @card_number = card_validation(gets.chomp)
     rescue RegexpError => err
-      $Log.error("invalid card number #{err}")
+      @logger.error("invalid card number #{err}")
       puts "Oops! Your make mistake? #{err}"
       puts "So let's try again)"
       retry
@@ -82,7 +86,7 @@ class Dashboard
       puts 'What is your name?'
       @name = name_validation(gets.chomp)
     rescue StandardError => err
-      $Log.error("inappropriate name #{err}")
+      @logger.error("inappropriate name #{err}")
       puts "Oops! Your make mistake? #{err}"
       puts "So let's try again)"
       retry
@@ -94,10 +98,10 @@ class Dashboard
       puts 'How old are you?'
       @age = age_validation(gets.chomp)
     rescue RangeError => err
-      $Log.error("age out of range #{err}")
+      @logger.error("age out of range #{err}")
       abort "Oops! #{err}"
     rescue TypeError => err
-      $Log.error("incorrect input for age #{err}")
+      @logger.error("incorrect input for age #{err}")
       puts "Oops! #{err}"
       puts "So let's try again)"
       retry

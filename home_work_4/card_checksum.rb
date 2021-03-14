@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
-require './logger'
+require 'logger'
 
 # The class accept card number and check it checksum
 class CardChecksum
+  def initialize
+    @logger = Logger.new('log_file.log')  
+  end
+
   def run_card_validation(card_number)
-    $Log.info("User's card namber: #{card_number}")
+    @logger.info("User's card namber: #{card_number}")
     @card_number = clean_card_number(card_number)
     checksum = get_checksum(@card_number)  
     checksum_validation(checksum)
@@ -29,7 +33,7 @@ class CardChecksum
     card_number = transform_to_output_view(@card_number)
     raise StandardError, "check unsuccessful for #{card_number}" unless (checksum % 10).zero?
 
-    $Log.info("Checksum success")
+    @logger.info("Checksum success")
     "check successful for #{card_number}"
 
   end
